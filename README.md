@@ -23,6 +23,7 @@ rush-conventionalcommits | Kinga Kazala
 
 Version|Date|Comments
 -------|----|--------
+1.2|02 March 2022|Adding change files based on the last commit message
 1.1|02 March 2022|Commitlint invoked by commit-msg hook
 1.0|02 March 2022|Initial release
 
