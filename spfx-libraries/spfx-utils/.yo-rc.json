@@ -1,0 +1,13 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "packageManager": "pnpm",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "environment": "spo",
+    "version": "1.13.1",
+    "libraryName": "spfx-utils",
+    "libraryId": "0d821d9f-948b-4470-92ac-0fc1e6e04870",
+    "isDomainIsolated": false,
+    "componentType": "library"
+  }
+}
