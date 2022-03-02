@@ -8,6 +8,13 @@
       "safeForSimultaneousRushProcesses": true,
       "autoinstallerName": "rush-commitlint",
       "shellCommand": "commitlint"
+    },
+    {
+      "name": "changefiles",
+      "commandKind": "global",
+      "summary": "",
+      "autoinstallerName": "rush-changemanager",
+      "shellCommand": "node common/scripts/rush-changefiles.js"
     }
   ],
   "parameters": [
