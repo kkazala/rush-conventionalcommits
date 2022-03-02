@@ -23,6 +23,7 @@ rush-conventionalcommits | Kinga Kazala
 
 Version|Date|Comments
 -------|----|--------
+1.1|02 March 2022|Commitlint invoked by commit-msg hook
 1.0|02 March 2022|Initial release
 
 ## Minimal Path to Awesome
