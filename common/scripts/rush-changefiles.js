@@ -36,7 +36,7 @@ function parseLastCommit(repoPath) {
             increment: increment,
             subject: lastCommit[0].subject,
             emailAddress: lastCommit[0].authorEmail,
-            lastMessage: lastCommit[0].body,
+            lastMessage: lastCommit[0].rawBody,
             hash: lastCommit[0].hash,
         }
     }
@@ -106,7 +106,7 @@ function generateChangeFilesFromCommit() {
                 //parse last 2 commits: was last commit for the project the last hash?
                 const result = parseRecentCommits(key, value, lastCommitInfo, rushConfiguration.rushJsonFolder, rushConfiguration.gitChangeLogUpdateCommitMessage);
                 if (result) { 
-                    console.log(Colors.Green + `Generating change file for "${result.increment}": "${result.subject}" form project ${result.projectName}` + Colors.Reset);
+                    console.log(Colors.Green + `Generating change file for "${result.increment}": "${result.subject}" for project ${result.projectName}` + Colors.Reset);
                     generateChangeFile(rushConfiguration, result);
                     console.log(Colors.Green + "Automatically adding change files" + Colors.Reset);
                     executeCommand(`git add ${rushConfiguration.changesFolder}`);
@@ -115,7 +115,7 @@ function generateChangeFilesFromCommit() {
                     console.log(Colors.Green + "All done!" + Colors.Reset);
                 }
                 else {
-                    console.log(Colors.Yellow + "Change file not required." + Colors.Reset);
+                    console.log(Colors.Yellow + `Change file not required for project ${key}.` + Colors.Reset);
                 }
             });
         });
