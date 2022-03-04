@@ -25,7 +25,13 @@ function executeCommandAsync(command) {
 }
 function getCurrentBranch() {
     const currBranch = child_process.execSync("git branch --show-current").toString().trim();
-    return child_process.execSync(`git rev-parse --symbolic-full-name --abbrev-ref "${currBranch}@{u}"`).toString().trim();
+    try {
+        return child_process.execSync(`git rev-parse --symbolic-full-name --abbrev-ref "${currBranch}@{u}"`).toString().trim();
+    } catch (error) {
+        console.log(Colors.Red + "Error fetching git remote branch features/versions. Detected changed files may be incorrect."+Colors.Reset)      
+        console.log(Colors.Yellow + `Execute 'git push --set-upstream ${defaultRemote} ${currBranch}' or 'git checkout --track ${defaultRemote}/${currBranch}' to set upstream branch` + Colors.Reset);
+        return null;
+    }
 }
 function parseLastCommit(repoPath) {
     const lastCommit = gitlog({ repo: repoPath, file: repoPath, number: 1, fields: ["subject", "body", "rawBody", "authorEmail", "hash"] });
@@ -65,26 +71,28 @@ function parseRecentCommits(projectName, projectPath, lastCommitInfo, repoPath, 
 async function getChangedProjectNamesAsync(rushConfiguration) {
     const projectAnalyzer = new rushLib.ProjectChangeAnalyzer(rushConfiguration);
     const terminal = new rushCore.Terminal(new rushCore.ConsoleTerminalProvider({ verboseEnabled: false }));
+    let rushProjects = new Map()
 
     try {
-        const changedProjects  = await projectAnalyzer.getChangedProjectsAsync({
-            targetBranchName: getCurrentBranch() , //rushConfiguration.repositoryDefaultFullyQualifiedRemoteBranch,
-            terminal: terminal,
-            enableFiltering: false,
-            shouldFetch: true,
-            includeExternalDependencies: false
-        });
-        let rushProjects = new Map()
-        //TODO: parse consumers? project.consumingProjects
+        const currentBranch = getCurrentBranch(rushConfiguration.repositoryDefaultRemote);
+        if (currentBranch) {
+            const changedProjects = await projectAnalyzer.getChangedProjectsAsync({
+                targetBranchName: currentBranch,
+                terminal: terminal,
+                enableFiltering: false,
+                shouldFetch: true,
+                includeExternalDependencies: false
+            });
 
-        changedProjects.forEach(project => {
-            rushProjects.set(project.packageName, project.projectFolder);
-        });
+            changedProjects.forEach(project => {
+                rushProjects.set(project.packageName, project.projectFolder);
+            });
+        }
         return rushProjects;
 
     } catch (error) {
-        console.log(error);
-        return null;
+        console.error(error);
+        return rushProjects;
     }
 }
 function generateChangeFile(rushConfig, res) {
